@@ -41,7 +41,10 @@ class RepeatedForwardAStar(ReplanningAgent):
         call ``problem.stop_clock()`` the moment it returns, and hand back both
         the path and the g-values.
         """
-        raise NotImplementedError("Part 2c: implement plan")
+        problem = self.make_search(self.pos, self.goal)
+        result = astar(problem, self.h, tie_break = self.tie_break, weight = self.weight)
+        problem.stop_clock()
+        return result
 
     def run(self, max_steps: int = 200_000) -> bool:
         """Drive the agent to the target. Returns True if it arrived.
@@ -60,7 +63,37 @@ class RepeatedForwardAStar(ReplanningAgent):
         Return ``False`` -- do not raise, do not loop forever -- when a plan
         comes back ``None``. Set ``self.solved`` either way.
         """
-        raise NotImplementedError("Part 2d: implement run")
+        if self.pos == self.goal:
+            self.solved = True
+            return True
+        
+        self.sense()
+        step_counter = 0
+        plan = self.plan()
+        path = plan[0]
+        if path == None:
+            self.solved = False
+            return False
+        while step_counter < max_steps:
+            for cell in path[1:]:
+                if self.belief.is_known_free(cell[0], cell[1]):
+                    self.move_to(cell)
+                    step_counter += 1
+                    if step_counter > max_steps:
+                        break
+                    if cell == self.goal:
+                        self.solved = True
+                        return True
+                else:
+                    plan = self.plan()
+                    path = plan[0]
+                    if path == None:
+                        self.solved = False
+                        return False
+                    break
+
+        self.solved = False
+        return False
 
 
 class RepeatedBackwardAStar(RepeatedForwardAStar):
