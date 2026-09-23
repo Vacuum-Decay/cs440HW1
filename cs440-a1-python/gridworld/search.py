@@ -46,6 +46,7 @@ def astar(problem: SearchProblem, h, *, tie_break: str = "large_g",
     g-value by decrease-key or by pushing a duplicate and skipping stale pops
     is your choice. Be ready to explain its time and memory costs.
     """
+    counter = 0
     open_set = BinaryHeap()
     h_value = h(problem.start, problem)
     open_set.push((h_value, 0, counter), problem.start)
@@ -53,7 +54,8 @@ def astar(problem: SearchProblem, h, *, tie_break: str = "large_g",
     g_values = {problem.start: 0}
     parent = {}
     closed = set()
-    BinaryHeap.push()
+    if problem.is_goal(problem.start):
+        return ([problem.start], {problem.start: 0})
 
     while len(open_set) > 0:
         s = open_set.pop()
@@ -64,13 +66,17 @@ def astar(problem: SearchProblem, h, *, tie_break: str = "large_g",
         if problem.is_goal(s):
             return (reconstruct(parent, s), g_values)
         closed.add(s)
-        problem.closed.add(s)
 
         for neighbor, cost in problem.expand(s):
-            h_value = h(neighbor, s) + cost
-            open_set.push((h_value, cost, counter), neighbor)
-            g_values.update({neighbor, h_value + cost})
+            g_value = g_values[s] + cost
+            h_value = h(neighbor, problem)
+            if neighbor not in g_values or g_value < g_values[neighbor]:
+                parent[neighbor] = s
+                open_set.push((h_value + g_value, g_value * -1, counter), neighbor)
+                g_values[neighbor] = g_value
             counter += 1
+
+    return (None, g_values)
     """
     ==================================================================
     Everything below is Parts 3, 5 and 7. Come back when you get there.
@@ -100,7 +106,6 @@ def astar(problem: SearchProblem, h, *, tie_break: str = "large_g",
     not the goal test. Use a consistent base heuristic. Do not reopen closed
     states in this assignment; Part 7's proof must cover this version.
     """
-    raise NotImplementedError("Part 2b: implement astar")
 
 
 def reconstruct(parent: dict, goal):
