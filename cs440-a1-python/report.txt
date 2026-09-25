@@ -33,8 +33,9 @@ other cell would increase the distance traveled, which satisfies the inequality 
 # Why must the agent either reach the target or discover that it cannot, in
 # finite time?  Give the argument, and the reason the number of moves is bounded
 # above by the number of unblocked cells squared.
-REPLACE THIS TEXT WITH YOUR ANSWER
-
+Agent will explore every cell that is unblocked from every cell that has a path to it that is not blocked.
+Each path that a cell explores has a potential length of N - 1. This means that we have N * (N - 1), or 
+O(N^2) time to complete. 
 === Q3 ===
 # What did breaking ties toward larger g do to the number of expansions, and
 # why?  Say why the size of the effect is not the same on the two families.
