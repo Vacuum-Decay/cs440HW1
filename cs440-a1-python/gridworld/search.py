@@ -54,6 +54,13 @@ def astar(problem: SearchProblem, h, *, tie_break: str = "large_g",
     g_values = {problem.start: 0}
     parent = {}
     closed = set()
+
+    if tie_break == "large_g":
+        tie_key = -g_value
+    else:
+        tie_key = g_value
+        open_set.push((h_value + g_value, tie_key, counter), neighbor)
+
     if problem.is_goal(problem.start):
         return ([problem.start], {problem.start: 0})
 

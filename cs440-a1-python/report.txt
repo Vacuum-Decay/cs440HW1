@@ -13,6 +13,7 @@
 # One per line, "Name, RUID".  Up to four.  These RUIDs also choose your
 # team's 50 gridworlds, so get them right before you generate a final report.
 Joseph Wang, 200006581
+Aditya Sharma, 227003972
 
 === PLE
 # Confirm that this statement is true for every team member; keep it unchanged.
@@ -39,13 +40,17 @@ O(N^2) time to complete.
 === Q3 ===
 # What did breaking ties toward larger g do to the number of expansions, and
 # why?  Say why the size of the effect is not the same on the two families.
-REPLACE THIS TEXT WITH YOUR ANSWER
+Generally, breaking ties toward larger g towards larger g reduces the number of expansions for both families because
+a larger g value means a smaller h value when f values are equal meaning the estimated remaining cost is lower so that A* prioritizes cells closer to the goal
+to avoid unnecessary searches. This is supported by the expansion ratios of {{scatter.tie.ratio}} for scatter and {{maze.tie.ratio}} for maze, showing that larger-g reduced expansions more significantly in scatter.
 
 === Q4 ===
 # Compare Repeated Backward A* and Repeated Forward A*. Explain how newly
 # discovered blockages affect the two directions. Say where each search
 # starts and how that start moves between replans.
-REPLACE THIS TEXT WITH YOUR ANSWER
+{{scatter.bwd_over_fwd}} and {{maze.bwd_over_fwd}} both show that the backwards searches have significantly more expansions than forwards search
+forward searches differ by searching from agents current position while goal is stationary. while backwards searches from a fixed point towards the moving agent
+blockages for algorithm to reroute. the forward search will reroute from agents new position while backwards may unnecesarily re explore areas near the fixed location.
 
 === Q5 ===
 # Why are the updated h-values admissible and consistent, and why do they stay
@@ -53,7 +58,11 @@ REPLACE THIS TEXT WITH YOUR ANSWER
 # hypothesis, say why the worlds are paired, and interpret the test on both
 # families. Distinguish significance from effect size, state the signed-rank
 # assumptions, and explain what failure to reject would mean.
-REPLACE THIS TEXT WITH YOUR ANSWER
+Admissible: h(s)=C-g(s), so 0<=h(s)<=h*(s).
+Consistent: h(goal)=0 and h(s)<=c(s,s')+h(s'). Increasing costs preserves consistency as the RHS increases.
+H0: Median (Adaptive−Repeated Forward)=0. Worlds are paired because both algorithms run on identical instances. 
+Wilcoxon assumes independent pairs and symmetric differences. Test open and maze worlds separately. p<0.05 indicates significance; 
+effect size measures diff magnitude. Failure to reject H0 means insufficient evidence of a difference, not equivalence.
 
 === Q6 ===
 # Which landmarks did you pick and why?  Why is |d(l,s) - d(l,goal)| admissible
@@ -66,4 +75,4 @@ REPLACE THIS TEXT WITH YOUR ANSWER
 # Prove the w-times-optimal bound for a consistent base h without reopening.
 # Interpret the sweep and choose a weight. How can replanning affect the
 # trade-off? Can Adaptive A* safely learn C-g(s) from a weighted search?
-REPLACE THIS TEXT WITH YOUR ANSWER
+With a consistent h, g(s) <= wg*(s) for selected states on an optimal path. So a frontier node has fw <= wC*, and the goal cost is bounded by wC* without reopening. For a game, if the sweep confirms useful savings, we can choose w=1.5 since larger weights can increase expansions. Replanning can alter savings because different routes reveal different walls; longer paths don't necessarily encounter walls sooner. Adaptive A* can't safely learn C-g(s) since weighted C may be suboptimal.
